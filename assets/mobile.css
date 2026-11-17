@@ -1,0 +1,87 @@
+/* ===== Mobil iyileştirmeler ===== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-x:hidden}
+button,a{-webkit-tap-highlight-color:transparent}
+
+@media (max-width:640px){
+  :root{--top:56px}
+  body{font-size:17px;line-height:1.65}
+  main{padding:0 16px calc(80px + env(safe-area-inset-bottom))}
+  .topbar{padding:0 max(10px,env(safe-area-inset-right)) 0 max(10px,env(safe-area-inset-left));gap:8px}
+  .icon-btn,.search-btn,.study-btn{height:40px;min-width:40px}
+  .brand{font-size:13.5px}
+
+  /* giriş */
+  .hero{padding:28px 0 28px}
+  .eyebrow{font-size:11px;letter-spacing:.1em}
+  .hero h1{font-size:clamp(34px,10vw,44px);margin:10px 0 14px}
+  .lede{font-size:17px;margin-bottom:22px}
+  .stats{display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;gap:8px;margin-bottom:22px}
+  .stats dt{font-size:22px}
+  .stats dd{font-size:11px}
+  .modes,.frames{gap:10px}
+  .modes button,.frames a{padding:12px 14px}
+
+  /* bölümler */
+  .chapter{padding-top:36px;margin-top:36px}
+  .ch-title{font-size:30px}
+  h3{font-size:22px;margin-top:1.8em}
+  .part-head{margin-top:44px;padding:20px 0 14px}
+  .kisaca{padding:12px 14px 4px}
+  .learn{padding:12px 14px}
+  .learn button{width:100%;padding:12px}
+
+  /* tablolar: kart görünümü */
+  .table-wrap{margin:1.2em 0 1.6em}
+  .table-wrap.stack .tw-scroll{max-height:none;overflow:visible}
+  .table-wrap.stack table,.table-wrap.stack tbody,.table-wrap.stack tr,.table-wrap.stack td{display:block;width:100%}
+  .table-wrap.stack thead{display:none}
+  .table-wrap.stack tr{padding:12px 14px;border-bottom:1px solid var(--line2)}
+  .table-wrap.stack tr:last-child{border-bottom:0}
+  .table-wrap.stack tbody tr:hover td{background:none}
+  .table-wrap.stack td{border:0;padding:3px 0;min-width:0;font-size:14.5px}
+  .table-wrap.stack td:first-child{font-size:15.5px;padding-bottom:6px;color:var(--ink)}
+  .table-wrap.stack td[data-label]:not(:first-child)::before{content:attr(data-label);display:block;font:700 10.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+  .table-wrap.stack td:empty{display:none}
+  .tw-bar{flex-wrap:wrap;padding:8px 10px}
+  .tw-bar input{font-size:16px;padding:8px 10px}
+  .tw-sort{font:13px var(--sans);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:7px 8px;max-width:48%}
+
+  /* haritalar */
+  figure.map{margin:1.6em 0}
+  .zoom-hint{opacity:1}
+  figcaption{font-size:13px}
+  .mk-list{grid-template-columns:1fr}
+  .lb-bar{padding:10px 12px;padding-top:max(10px,env(safe-area-inset-top));gap:8px}
+  .lb-bar>span,#lbTitle{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .lb-tools{flex:none}
+  .lb-tools button{min-width:40px;height:40px;margin-left:4px}
+  .lb-stage{margin:0 6px}
+
+  /* arama */
+  .palette{padding:max(12px,env(safe-area-inset-top)) 10px}
+  #q{font-size:16px}
+  .results{max-height:70vh}
+  .pal-foot{display:none}
+
+  /* çalışma paneli */
+  .study{padding:0}
+  .study-card{border-radius:0;border:0;min-height:100vh;min-height:100dvh}
+  .study-head{border-radius:0;padding:10px;padding-top:max(10px,env(safe-area-inset-top))}
+  .study-tabs{gap:2px}
+  .study-tabs button{padding:9px 10px;font-size:13.5px}
+  .study-body{padding:18px 16px calc(30px + env(safe-area-inset-bottom))}
+  .chips{flex-wrap:nowrap;overflow-x:auto;margin-left:-16px;margin-right:-16px;padding:0 16px 4px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:none}
+  .row .btn{flex:1 1 auto}
+  .fc .f,.fc .b{padding:22px 20px}
+
+  .foot{flex-direction:column;gap:8px}
+}
+
+/* yukarı çık düğmesi */
+.to-top{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--paper);color:var(--ink);box-shadow:var(--shadow);font:600 18px var(--sans);display:grid;place-items:center;cursor:pointer;z-index:45;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .2s,transform .2s}
+.to-top.show{opacity:1;pointer-events:auto;transform:none}
+@media (min-width:981px){.to-top{display:none}}
+@media print{.to-top{display:none!important}}

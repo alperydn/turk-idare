@@ -18,6 +18,7 @@ jobs:
           for f in index.html assets/app.js assets/study.js assets/study.json assets/style.css assets/search.json assets/favicon.svg; do
             curl -fsSL --retry 3 "$BASE/$f" -o "$f"
           done
+          python3 .github/scripts/inject-mobile.py
           ls -la . assets
       - name: Değişiklikleri kaydet
         run: |
