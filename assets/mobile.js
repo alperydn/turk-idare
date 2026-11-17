@@ -38,8 +38,8 @@ mq.addEventListener?mq.addEventListener('change',apply):mq.addListener(apply);
 /* haritalar: dokunmatik ipucu */
 $$('.zoom-hint').forEach(function(h){if(matchMedia('(hover:none)').matches)h.textContent='Büyütmek için dokun'});
 
-/* açılışta menüyü göster (mobil/tablet; belirli bir bölüme bağlantıyla gelindiyse açma) */
-if(matchMedia('(max-width:980px)').matches&&!location.hash){
+/* açılışta menüyü göster (mobil/tablet) */
+if(matchMedia('(max-width:980px)').matches){
   document.body.classList.add('menu-open');
   var mb=document.getElementById('menuBtn');if(mb)mb.setAttribute('aria-expanded','true');
 }
