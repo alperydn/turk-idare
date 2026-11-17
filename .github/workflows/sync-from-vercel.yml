@@ -1,0 +1,28 @@
+name: Vercel'den dosyaları eşitle
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/sync-from-vercel.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dosyaları indir
+        run: |
+          BASE=https://turk-idare-site.vercel.app
+          mkdir -p assets
+          for f in index.html assets/app.js assets/study.js assets/study.json assets/style.css assets/search.json assets/favicon.svg; do
+            curl -fsSL --retry 3 "$BASE/$f" -o "$f"
+          done
+          ls -la . assets
+      - name: Değişiklikleri kaydet
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "Vercel'den site dosyalarını eşitle"
+          git push
