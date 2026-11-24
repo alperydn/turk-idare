@@ -71,3 +71,9 @@ test('kapsamın köşeleri haritanın kenarlarına yakın düşer (ölçek doğr
   const [wx] = c._projeksiyon([44, 44]), [ex] = c._projeksiyon([96, 44]);
   assert.ok(wx < 100 && ex > 900, `batı ${wx} doğu ${ex}`);
 });
+
+test('kıyıya 15 km yakın nokta kabul edilir, 60 km uzaktaki reddedilir', () => {
+  // UZB kutusunun doğu kenarı 73°; 41.3° enlemde 0.1° ≈ 8 km, 0.7° ≈ 59 km
+  assert.doesNotThrow(() => uret([{ ...taskent, lon: 73.1 }]));
+  assert.throws(() => uret([{ ...taskent, lon: 73.7 }]), /UZB sınırları dışında/);
+});

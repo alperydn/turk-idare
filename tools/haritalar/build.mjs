@@ -35,6 +35,18 @@ class InceYol {
 }
 const r1 = (s) => s || '';
 
+// 1:50m kıyı çizgisi kaba olduğu için kıyı şehirleri denize düşebilir:
+// nokta ya da 15 km çevresindeki 8 yönden biri poligondaysa kabul.
+function yakindaMi(f, [lon, lat]) {
+  if (geoContains(f, [lon, lat])) return true;
+  const dLat = 15 / 111.32, dLon = dLat / Math.cos((lat * Math.PI) / 180);
+  for (let a = 0; a < 8; a++) {
+    const t = (a * Math.PI) / 4;
+    if (geoContains(f, [lon + dLon * Math.cos(t), lat + dLat * Math.sin(t)])) return true;
+  }
+  return false;
+}
+
 export function bolgeUret(bolge, geo, unsurlar, { indexHtml }) {
   const [[x0, y0], [x1, y1]] = bolge.kapsam;
   const merkez = [(x0 + x1) / 2, (y0 + y1) / 2];
@@ -102,7 +114,7 @@ export function bolgeUret(bolge, geo, unsurlar, { indexHtml }) {
       if (u.ulke) {
         const f = ulkeFeat.get(u.ulke);
         if (!f) throw new Error(`${u.id}: ülke bulunamadı ${u.ulke}`);
-        if (u.tur === 'nokta' && !geoContains(f, konum)) throw new Error(`${u.id}: (${u.lat}, ${u.lon}) ${u.ulke} sınırları dışında`);
+        if (u.tur === 'nokta' && !yakindaMi(f, konum)) throw new Error(`${u.id}: (${u.lat}, ${u.lon}) ${u.ulke} sınırları dışında`);
       }
       if (u.tur === 'alan' && !(u.yaricapKm > 0)) throw new Error(`${u.id}: alan için yaricapKm gerekli`);
     }

@@ -7,7 +7,7 @@ export const BOLGELER = {
   },
   osmanli: {
     id: 'osmanli', baslik: 'Osmanlı Coğrafyası',
-    kapsam: [[-10, 10], [60, 50]], paralel: [20, 42], esikKm: 200,
+    kapsam: [[-10, 10], [60, 52]], paralel: [20, 42], esikKm: 200,
     nehirler: ['Danube', 'Donau', 'Nile', 'Euphrates', 'Tigris', 'Dniester', 'Don', 'Volga', 'Jordan'],
   },
   avrupa: {
