@@ -62,6 +62,7 @@ Kullanıcı 1. yolu seçti.
 ## Kararlaştırılanlar
 
 - Etkileşim: listeden sürükle-bırak, serbest yerleştirme (kullanıcı kararı).
+- Tüm unsurların doğru konumlarını toplu gösteren "Çalış" modu (kullanıcı isteği).
 - Hangi unsurların haritaya konacağı: Claude'un seçimi (kullanıcı bıraktı;
   aşağıda).
 - Harita üretimi: yol 1 (kullanıcı kararı).
@@ -106,6 +107,19 @@ Kategoriler, her biri ayrı renkli işaret:
 Konumu belirsiz ya da nokta olarak gösterilemeyen unsurlar (diller,
 mezhepler, yeri belirsiz anlaşmalar) alınmaz. Bölge başına tahminen 50–90
 unsur.
+
+### Çalışma modu (kullanıcı isteği)
+Her sayfanın iki modu var; üstte "Çalış" / "Alıştırma" anahtarı.
+- **Çalış:** seçili kategorilerdeki **tüm** unsurlar doğru konumlarında,
+  etiketleriyle birlikte haritada görünür. Öğrenci bakıp aklında tutar.
+  Kategori seçimi burada da çalışır (ör. yalnızca başkentler); yakınlaştırma
+  ve kaydırma açıktır; unsura dokununca açıklama + sitedeki bölüm bağlantısı.
+- **Alıştırma:** harita temizlenir, aynı kategorilerden tur başlar (aşağıda).
+  Bu modda doğru konumlar yalnızca "Kontrol et" ya da "Cevapları göster"
+  sonrasında görünür.
+- Varsayılan açılış modu: Çalış.
+- Bu mod etiket çakışmasını önemli kılar: etiketler kalabalıkta okunur
+  kalmalı (yakınlaştırınca açılan etiketler, kısaltma ya da kaydırma).
 
 ### Alıştırma akışı
 - Üstte kategori seçimi (çoklu) ve "Tur büyüklüğü" (10 / 20 / hepsi);
