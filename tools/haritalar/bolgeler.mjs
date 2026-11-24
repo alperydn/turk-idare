@@ -17,7 +17,7 @@ export const BOLGELER = {
   },
   islam: {
     id: 'islam', baslik: 'İslam Coğrafyası',
-    kapsam: [[-20, -12], [140, 50]], paralel: [5, 35], esikKm: 300,
+    kapsam: [[-20, -12], [140, 53]], paralel: [5, 35], esikKm: 300,
     nehirler: ['Nile', 'Euphrates', 'Tigris', 'Indus', 'Ganges', 'Niger', 'Syr Darya', 'Amu  Darya', 'Volga', 'Danube', 'Brahmaputra'],
   },
 };
