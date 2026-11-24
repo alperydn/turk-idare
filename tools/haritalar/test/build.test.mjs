@@ -77,3 +77,10 @@ test('kıyıya 15 km yakın nokta kabul edilir, 60 km uzaktaki reddedilir', () =
   assert.doesNotThrow(() => uret([{ ...taskent, lon: 73.1 }]));
   assert.throws(() => uret([{ ...taskent, lon: 73.7 }]), /UZB sınırları dışında/);
 });
+
+test('inceltme sonrası tek noktaya düşen minik ülkeler haritaya eklenmez', () => {
+  const minik = { ...geo, ulkeler: { type: 'FeatureCollection', features: [...geo.ulkeler.features, kutu('VAT', [70, 40, 70.001, 40.001])] } };
+  const c = bolgeUret(bolge, minik, [], { indexHtml: html });
+  assert.ok(!c.ulkeler.some((u) => u.a3 === 'VAT'));
+  assert.ok(c.ulkeler.every((u) => u.d.includes('L')));
+});

@@ -84,7 +84,7 @@ export function bolgeUret(bolge, geo, unsurlar, { indexHtml }) {
     ulkeFeat.set(a3, f);
     if (!icinde(f)) continue;
     const d = r1(yol(f));
-    if (d) ulkeler.push({ a3, d });
+    if (d.includes('L')) ulkeler.push({ a3, d }); // tek noktalık minik ülkeler atlanır
   }
   const birlesik = (fc, filtre) => r1(fc.features.filter((f) => filtre(f) && icinde(rewind(f))).map((f) => yol(rewind(f)) || '').join(''));
   const goller = birlesik(geo.goller, (f) => (f.properties.scalerank ?? 0) <= 3);
