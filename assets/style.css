@@ -252,3 +252,10 @@ section.chapter[data-reg] .kicker{color:var(--rc)}
 @media(max-width:560px){.cmp{grid-template-columns:1fr}.prow{grid-template-columns:1fr}.fc,.fc>div{min-height:300px}}
 @media print{.study,.learn,.modes{display:none!important}}
 .part-head[data-reg]{border-top-color:var(--rc)}.part-head[data-reg] .kicker{color:var(--rc)}
+
+/* Harita alıştırması bağlantıları */
+.map-btn{display:flex;align-items:center;gap:7px;height:38px;padding:0 13px;border:1px solid var(--teal);color:var(--teal);background:var(--paper);border-radius:10px;font:600 13px var(--sans);text-decoration:none;white-space:nowrap}
+.map-btn:hover{background:var(--chip)}
+.part-map{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:7px 13px;border:1px solid var(--line);border-radius:10px;background:var(--paper);font:600 14px var(--sans);color:var(--teal);text-decoration:none}
+.part-map:hover{border-color:var(--teal)}
+@media(max-width:900px){.map-btn span{display:none}.map-btn{padding:0 10px}}
