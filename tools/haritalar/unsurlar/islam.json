@@ -2079,61 +2079,72 @@
   "id": "nil",
   "ad": "Nil",
   "kat": "fiziki",
-  "tur": "alan",
+  "tur": "cizgi",
   "lat": 26.5,
   "lon": 31.8,
   "ulke": null,
-  "yaricapKm": 300,
   "ref": "b28-28-1-tarihi-uretim-ve-ticaret-merkezleri",
-  "not": "Mısır'ın can damarı"
+  "not": "Mısır'ın can damarı",
+  "nehir": [
+   "Nile"
+  ]
  },
  {
   "id": "firat-dicle",
   "ad": "Fırat ve Dicle",
   "kat": "fiziki",
-  "tur": "alan",
+  "tur": "cizgi",
   "lat": 34.0,
   "lon": 43.0,
   "ulke": null,
-  "yaricapKm": 350,
   "ref": "b28-28-1-tarihi-uretim-ve-ticaret-merkezleri",
-  "not": "Mezopotamya tarımı"
+  "not": "Mezopotamya tarımı",
+  "nehir": [
+   "Euphrates",
+   "Tigris"
+  ]
  },
  {
   "id": "indus",
   "ad": "İndus",
   "kat": "fiziki",
-  "tur": "alan",
+  "tur": "cizgi",
   "lat": 27.5,
   "lon": 68.5,
   "ulke": null,
-  "yaricapKm": 300,
   "ref": "b25-25-3-islam-in-yayilisi-ve-bolgeler",
-  "not": "711 Sind'in fethi"
+  "not": "711 Sind'in fethi",
+  "nehir": [
+   "Indus"
+  ]
  },
  {
   "id": "ganj",
   "ad": "Ganj",
   "kat": "fiziki",
-  "tur": "alan",
+  "tur": "cizgi",
   "lat": 25.5,
   "lon": 83.0,
   "ulke": null,
-  "yaricapKm": 400,
   "ref": "b25-25-3-islam-in-yayilisi-ve-bolgeler",
-  "not": "Kuzey Hindistan"
+  "not": "Kuzey Hindistan",
+  "nehir": [
+   "Ganges"
+  ]
  },
  {
   "id": "nijer-nehri",
   "ad": "Nijer Nehri",
   "kat": "fiziki",
-  "tur": "alan",
+  "tur": "cizgi",
   "lat": 15.5,
   "lon": -2.0,
   "ulke": null,
-  "yaricapKm": 400,
   "ref": "b25-25-3-islam-in-yayilisi-ve-bolgeler",
-  "not": "Timbuktu ve Gao"
+  "not": "Timbuktu ve Gao",
+  "nehir": [
+   "Niger"
+  ]
  },
  {
   "id": "sahra",

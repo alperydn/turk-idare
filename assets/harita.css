@@ -53,7 +53,7 @@
 .hb-nehir{fill:none;stroke:var(--nehir);stroke-width:1.1}
 .hb-isaret{cursor:pointer}
 .hb-isaret .n{fill:var(--renk);stroke:var(--paper);stroke-width:1.5}
-.hb-isaret .a{fill:var(--renk);fill-opacity:.06;stroke:var(--renk);stroke-opacity:.45;stroke-dasharray:4 3;stroke-width:1}
+.hb-isaret .a{pointer-events:none;fill:var(--renk);fill-opacity:.06;stroke:var(--renk);stroke-opacity:.45;stroke-dasharray:4 3;stroke-width:1}
 .hb-isaret text{font-family:var(--sans);font-weight:600;fill:var(--renk);paint-order:stroke;stroke:var(--paper);stroke-width:3px;stroke-linejoin:round;pointer-events:none}
 .hb-isaret.dogru .n{fill:var(--dogru)}
 .hb-isaret.yanlis .n{fill:var(--yanlis)}
@@ -61,6 +61,11 @@
 .hb-isaret.yanlis text{fill:var(--yanlis)}
 .hb-isaret.hayalet .n{fill:var(--paper);stroke:var(--dogru);stroke-width:2.5}
 .hb-isaret.hayalet text{fill:var(--dogru)}
+.hb-isaret .c{pointer-events:none;fill:none;stroke:var(--renk);stroke-width:4;stroke-opacity:.45;stroke-linecap:round;stroke-linejoin:round}
+.hb-isaret.hayalet .c{stroke:var(--dogru);stroke-opacity:.6}
+.hb-kume{margin:6px 0 0;padding:0;list-style:none;max-height:220px;overflow:auto}
+.hb-kume li{padding:3px 0 3px 14px;position:relative;color:var(--muted);font-size:12.5px}
+.hb-kume li::before{content:"";position:absolute;left:0;top:9px;width:8px;height:8px;border-radius:50%;background:var(--renk)}
 .hb-cizgi{stroke:var(--yanlis);stroke-width:1.5;stroke-dasharray:5 4;fill:none}
 .hb-yerlesik{cursor:grab}
 .hb-zoom{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px;z-index:2}

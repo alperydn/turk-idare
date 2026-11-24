@@ -24,7 +24,9 @@
   "tur": "ulke",
   "ulke": "GRC",
   "ref": "b9-9-1-osmanli-topraklari-uzerinde-bugun-bulunan-ulkeler",
-  "not": "Mora, Selanik, Yanya; 1830'da bağımsız"
+  "not": "Mora, Selanik, Yanya; 1830'da bağımsız",
+  "lat": 39.3,
+  "lon": 22.0
  },
  {
   "id": "kuzey-makedonya",
@@ -60,7 +62,9 @@
   "tur": "ulke",
   "ulke": "HRV",
   "ref": "b9-9-1-osmanli-topraklari-uzerinde-bugun-bulunan-ulkeler",
-  "not": "Slavonya sınır sancakları; 1699'a kadar"
+  "not": "Slavonya sınır sancakları; 1699'a kadar",
+  "lat": 45.3,
+  "lon": 16.0
  },
  {
   "id": "karadag",
@@ -1662,49 +1666,58 @@
   "id": "tuna",
   "ad": "Tuna Nehri",
   "kat": "fiziki",
-  "tur": "alan",
+  "tur": "cizgi",
   "lat": 44.0,
   "lon": 24.5,
   "ulke": null,
-  "yaricapKm": 300,
   "ref": "giris-osmanli-cografyasinin-tanimi",
-  "not": "Rumeli'nin kuzey hattı"
+  "not": "Rumeli'nin kuzey hattı",
+  "nehir": [
+   "Danube",
+   "Donau"
+  ]
  },
  {
   "id": "nil",
   "ad": "Nil Nehri",
   "kat": "fiziki",
-  "tur": "alan",
+  "tur": "cizgi",
   "lat": 26.5,
   "lon": 31.8,
   "ulke": null,
-  "yaricapKm": 300,
   "ref": "giris-osmanli-cografyasinin-tanimi",
-  "not": "Mısır Eyaleti'nin can damarı"
+  "not": "Mısır Eyaleti'nin can damarı",
+  "nehir": [
+   "Nile"
+  ]
  },
  {
   "id": "firat",
   "ad": "Fırat Nehri",
   "kat": "fiziki",
-  "tur": "alan",
+  "tur": "cizgi",
   "lat": 35.3,
   "lon": 40.1,
   "ulke": null,
-  "yaricapKm": 250,
   "ref": "giris-osmanli-cografyasinin-tanimi",
-  "not": "Halep–Bağdat arası"
+  "not": "Halep–Bağdat arası",
+  "nehir": [
+   "Euphrates"
+  ]
  },
  {
   "id": "dicle",
   "ad": "Dicle Nehri",
   "kat": "fiziki",
-  "tur": "alan",
+  "tur": "cizgi",
   "lat": 34.6,
   "lon": 43.7,
   "ulke": null,
-  "yaricapKm": 250,
   "ref": "giris-osmanli-cografyasinin-tanimi",
-  "not": "Musul–Bağdat hattı"
+  "not": "Musul–Bağdat hattı",
+  "nehir": [
+   "Tigris"
+  ]
  },
  {
   "id": "mora",

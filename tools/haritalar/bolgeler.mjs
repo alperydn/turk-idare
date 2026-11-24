@@ -13,7 +13,7 @@ export const BOLGELER = {
   avrupa: {
     id: 'avrupa', baslik: 'Avrupa Tarihî Coğrafyası',
     kapsam: [[-12, 34], [45, 66]], paralel: [42, 58], esikKm: 150,
-    nehirler: ['Danube', 'Donau', 'Rhine', 'Elbe', 'Oder', 'Vistula', 'Dniester', 'Don', 'Volga', 'Seine', 'Loire', 'Po', 'Rhône'],
+    nehirler: ['Danube', 'Donau', 'Rhine', 'Rhein', 'Rhin', 'Dnipro', 'Dnepre', 'Elbe', 'Oder', 'Vistula', 'Dniester', 'Don', 'Volga', 'Seine', 'Loire', 'Po', 'Rhône'],
   },
   islam: {
     id: 'islam', baslik: 'İslam Coğrafyası',

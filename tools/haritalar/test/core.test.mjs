@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { turSec, dogruMu, puanla, seyrelt, enIyiPuan, enIyiKaydet } from '../../../assets/harita-core.js';
+import { turSec, dogruMu, puanla, seyrelt, kumele, enIyiPuan, enIyiKaydet } from '../../../assets/harita-core.js';
 
 const unsurlar = Array.from({ length: 30 }, (_, i) => ({
   id: 'u' + i, kat: i < 12 ? 'baskent' : 'eser', tur: 'nokta', x: i, y: i,
@@ -114,4 +114,22 @@ test('enIyiPuan depo hata verirse null döner', () => {
   const bozuk = { getItem: () => { throw new Error('gizli mod'); }, setItem: () => { throw new Error('x'); } };
   assert.equal(enIyiPuan('islam', bozuk), null);
   assert.equal(enIyiKaydet('islam', 10, bozuk), false);
+});
+
+test('dogruMu cizgi: nehrin herhangi bir yerine yakınsa doğru', () => {
+  const u = { tur: 'cizgi', x: 0, y: 0, cizgi: [[[0, 0], [1000, 0]]] };
+  assert.equal(dogruMu(u, { x: 900, y: 70 }, harita, hayir), true); // uca yakın, 140 km
+  assert.equal(dogruMu(u, { x: 500, y: 80 }, harita, hayir), false); // 160 km
+  assert.equal(dogruMu(u, { x: 1070, y: 0 }, harita, hayir), true); // ucun 140 km ötesi
+});
+
+test('kumele birbirine çok yakın noktaları tek kümede toplar', () => {
+  const k = kumele([
+    { id: 'a', x: 0, y: 0, oncelik: 5 }, { id: 'b', x: 3, y: 0, oncelik: 1 },
+    { id: 'c', x: 1, y: 4, oncelik: 2 }, { id: 'd', x: 50, y: 0, oncelik: 1 },
+  ], 8);
+  assert.equal(k.length, 2);
+  const buyuk = k.find((x) => x.uyeler.length === 3);
+  assert.equal(buyuk.uyeler[0].id, 'a'); // en yüksek öncelik başta
+  assert.deepEqual(buyuk.uyeler.map((u) => u.id).sort(), ['a', 'b', 'c']);
 });

@@ -971,25 +971,29 @@
   "id": "seyhun",
   "ad": "Seyhun (Siriderya)",
   "kat": "fiziki",
-  "tur": "alan",
+  "tur": "cizgi",
   "lat": 43.5,
   "lon": 67.0,
   "ulke": null,
-  "yaricapKm": 300,
   "ref": "giris-orta-asya-turk-cografyasinin-tanimi-tarihi-alt-bolgele",
-  "not": "Aral'a dökülen kuzey ırmağı"
+  "not": "Aral'a dökülen kuzey ırmağı",
+  "nehir": [
+   "Syr Darya"
+  ]
  },
  {
   "id": "ceyhun",
   "ad": "Ceyhun (Amuderya)",
   "kat": "fiziki",
-  "tur": "alan",
+  "tur": "cizgi",
   "lat": 40.0,
   "lon": 62.8,
   "ulke": null,
-  "yaricapKm": 300,
   "ref": "giris-orta-asya-turk-cografyasinin-tanimi-tarihi-alt-bolgele",
-  "not": "Aral'a dökülen güney ırmağı"
+  "not": "Aral'a dökülen güney ırmağı",
+  "nehir": [
+   "Amu  Darya"
+  ]
  },
  {
   "id": "desti-kipcak",

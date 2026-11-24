@@ -1,5 +1,5 @@
 // Harita alıştırması arayüzü: Çalış ve Alıştırma modları.
-import { turSec, dogruMu, puanla, seyrelt, enIyiPuan, enIyiKaydet } from './harita-core.js';
+import { turSec, dogruMu, puanla, seyrelt, kumele, enIyiPuan, enIyiKaydet } from './harita-core.js?v=h2';
 
 const NS = 'http://www.w3.org/2000/svg';
 const KATEGORI = {
@@ -78,7 +78,12 @@ function kur() {
   document.querySelectorAll('.hb-mod button').forEach((b) => (b.onclick = () => modSec(b.dataset.mod)));
   $('#hbBoyut').onchange = (e) => { durum.boyut = e.target.value === 'hepsi' ? 'hepsi' : +e.target.value; yeniTur(); };
   $('#hbKontrol').onclick = kontrol;
-  $('#hbCevap').onclick = () => { durum.cevaplar = !durum.cevaplar; ciz(); };
+  $('#hbCevap').onclick = () => {
+    durum.cevaplar = !durum.cevaplar;
+    if (durum.cevaplar) durum.cevapGoruldu = true;
+    cevapDugmesi();
+    ciz();
+  };
   $('#hbYeni').onclick = yeniTur;
   document.querySelectorAll('.hb-zoom button').forEach((b) => (b.onclick = () => zoomDugme(b.dataset.zoom)));
 
@@ -107,6 +112,8 @@ function yeniTur() {
   durum.yerler = new Map();
   durum.sonuc = null;
   durum.cevaplar = false;
+  durum.cevapGoruldu = false;
+  cevapDugmesi();
   durum.secili = null;
   kutuKapat();
   listeCiz();
@@ -115,10 +122,17 @@ function yeniTur() {
 
 function kontrol() {
   durum.sonuc = puanla(durum.tur, durum.yerler, durum.veri, ulkeIcinde);
-  const rekor = enIyiKaydet(bolgeId, durum.sonuc.puan);
-  durum.rekor = rekor;
+  // Cevaplara bakılan ya da boş geçilen tur en iyi puana sayılmaz.
+  const sayilir = !durum.cevapGoruldu && durum.yerler.size > 0;
+  durum.rekor = sayilir && enIyiKaydet(bolgeId, durum.sonuc.puan);
   ciz();
   listeCiz();
+}
+
+function cevapDugmesi() {
+  const b = $('#hbCevap');
+  b.textContent = durum.cevaplar ? 'Cevapları gizle' : 'Cevapları göster';
+  b.setAttribute('aria-pressed', durum.cevaplar);
 }
 
 function ulkeIcinde(a3, x, y) {
@@ -143,24 +157,25 @@ function ciz() {
   puanYaz();
 }
 
-function isaret(u, x, y, { sinif = '', etiket = true, alan = true } = {}) {
+function isaret(u, x, y, { sinif = '', etiket = true, alan = true, metin = u.ad } = {}) {
   const px = birim();
   const g = el('g', { class: `hb-isaret ${sinif}`, style: `--renk:var(--k-${u.kat})`, 'data-id': u.id });
+  if (alan && u.tur === 'cizgi') g.append(el('path', { class: 'c', d: u.cizgi.map((c) => 'M' + c.join('L')).join(''), 'vector-effect': 'non-scaling-stroke' }));
   if (alan && u.tur === 'alan') g.append(el('circle', { class: 'a', cx: x, cy: y, r: u.yaricapKm / durum.veri.kmBirim, 'vector-effect': 'non-scaling-stroke' }));
   if (u.tur !== 'ulke' || sinif) g.append(el('circle', { class: 'n', cx: x, cy: y, r: 5 * px, 'stroke-width': 1.5 * px }));
   if (etiket) {
     const t = el('text', { x: x + 8 * px, y: y + 4 * px, 'font-size': 12 * px, 'stroke-width': 3 * px });
-    t.textContent = u.ad;
+    t.textContent = metin;
     if (u.tur === 'ulke' && !sinif) { t.setAttribute('text-anchor', 'middle'); t.setAttribute('x', x); t.setAttribute('font-size', 13 * px); }
     g.append(t);
   }
   return g;
 }
 
-function etiketKutusu(u, x, y) {
+function etiketKutusu(u, x, y, metin = u.ad) {
   const px = birim();
   const fs = (u.tur === 'ulke' ? 13 : 12) * px;
-  const w = u.ad.length * fs * 0.62 + 4 * px;
+  const w = metin.length * fs * 0.62 + 4 * px;
   const bx = u.tur === 'ulke' ? x - w / 2 : x + 8 * px;
   return { id: u.id, x: bx, y: y + 4 * px - fs, w, h: fs * 1.2, oncelik: ONCELIK[u.kat] };
 }
@@ -174,15 +189,23 @@ function calisCiz() {
   const liste = durum.veri.unsurlar.filter((u) => durum.kategoriler.has(u.kat));
   for (const u of liste) if (u.tur === 'ulke') ulkeYolu.get(u.ulke)?.classList.add('vurgu');
   const gor = liste.filter((u) => gorunurMu(u.x, u.y));
-  const etiketli = seyrelt(gor.map((u) => etiketKutusu(u, u.x, u.y)));
-  // önce alanlar (altta), sonra noktalar
-  const sirali = [...gor].sort((a, b) => (a.tur === 'alan' ? 0 : 1) - (b.tur === 'alan' ? 0 : 1));
-  for (const u of sirali) {
-    const g = isaret(u, u.x, u.y, { etiket: etiketli.has(u.id) });
-    g.addEventListener('click', (e) => { e.stopPropagation(); kutuAc(u, u.x, u.y); });
+  // Aynı noktaya düşenleri (ekranda 7 pikselden yakın) tek işarette topla; ülkeler ayrı kalır.
+  const kumeler = [
+    ...gor.filter((u) => u.tur === 'ulke').map((u) => ({ x: u.x, y: u.y, uyeler: [u] })),
+    ...kumele(gor.filter((u) => u.tur !== 'ulke').map((u) => ({ ...u, oncelik: ONCELIK[u.kat] })), 7 * birim()),
+  ].map((k) => ({ ...k, bas: k.uyeler[0], metin: k.uyeler[0].ad + (k.uyeler.length > 1 ? ` +${k.uyeler.length - 1}` : '') }));
+  const etiketli = seyrelt(kumeler.map((k) => etiketKutusu(k.bas, k.bas.x, k.bas.y, k.metin)));
+  // önce alanlar ve nehirler (altta), sonra noktalar
+  const alttaMi = (k) => (k.bas.tur === 'alan' || k.bas.tur === 'cizgi' ? 0 : 1);
+  for (const k of [...kumeler].sort((a, b) => alttaMi(a) - alttaMi(b))) {
+    const u = k.bas;
+    const g = isaret(u, u.x, u.y, { etiket: etiketli.has(u.id), metin: k.metin });
+    // kümedeki diğer alan ve nehirlerin şekilleri de görünsün
+    for (const d of k.uyeler.slice(1)) if (d.tur === 'alan' || d.tur === 'cizgi') g.prepend(isaret(d, d.x, d.y, { etiket: false }));
+    g.addEventListener('click', (e) => { e.stopPropagation(); kutuAc(u, u.x, u.y, k.uyeler); });
     gIsaret.append(g);
   }
-  const gizli = gor.length - etiketli.size;
+  const gizli = kumeler.length - etiketli.size;
   $('#hbIpucu').textContent = `${liste.length} unsur gösteriliyor.` +
     (gizli > 0 ? ` Kalabalık yerlerde ${gizli} isim gizlendi: yakınlaştırın ya da noktaya dokunun.` : '') +
     ' Ezberledikten sonra Alıştırma moduna geçin.';
@@ -223,7 +246,8 @@ function puanYaz() {
   if (!p) return;
   const eniyi = enIyiPuan(bolgeId);
   const s = durum.sonuc;
-  p.textContent = (s ? `Puan: ${s.puan} (${s.dogru.length}/${durum.tur.length})${durum.rekor ? ' · Yeni rekor!' : ''}` : '') +
+  const not = s && durum.cevapGoruldu ? ' · Cevaplara bakıldı, rekora sayılmaz' : '';
+  p.textContent = (s ? `Puan: ${s.puan} (${s.dogru.length}/${durum.tur.length})${durum.rekor ? ' · Yeni rekor!' : not}` : '') +
     (eniyi !== null ? `${s ? ' · ' : ''}En iyi: ${eniyi}` : '');
 }
 
@@ -252,8 +276,24 @@ function listeCiz() {
 }
 
 // ---------- açılır kutu ----------
-function kutuAc(u, x, y) {
+function kutuAc(u, x, y, uyeler = [u]) {
   const k = $('#hbKutu');
+  if (uyeler.length > 1) {
+    k.style.setProperty('--renk', 'var(--muted)');
+    k.innerHTML = `<span class="k">Bu noktada ${uyeler.length} unsur</span><ul class="hb-kume"></ul>`;
+    const ul = k.querySelector('ul');
+    for (const m of uyeler) {
+      const li = el('li', { style: `--renk:var(--k-${m.kat})` }, null);
+      const a = el('a', { href: `../index.html#${m.ref}`, target: '_blank', rel: 'noopener' }, null);
+      a.textContent = m.ad;
+      const not = el('span', {}, null);
+      not.textContent = ` — ${KATEGORI[m.kat]}`;
+      li.append(a, not);
+      ul.append(li);
+    }
+    konumla(k, x, y);
+    return;
+  }
   const s = durum.sonuc;
   let durumHtml = '';
   if (s && durum.mod === 'alistirma') {
@@ -267,6 +307,10 @@ function kutuAc(u, x, y) {
   k.querySelector('b').textContent = u.ad;
   k.querySelector('p').textContent = u.not;
   k.querySelector('a').href = `../index.html#${u.ref}`;
+  konumla(k, x, y);
+}
+
+function konumla(k, x, y) {
   k.hidden = false;
   const m = svg.getScreenCTM();
   const r = haritaKutu.getBoundingClientRect();
@@ -350,7 +394,7 @@ function sinirla(vb) {
   const { genislik: W, yukseklik: H } = durum.veri;
   const oran = haritaKutu.clientHeight / (haritaKutu.clientWidth || 1);
   const wMax = Math.max(W, H / oran); // tam görünümün genişliği
-  const w = Math.min(Math.max(vb.w, W / 10), wMax);
+  const w = Math.min(Math.max(vb.w, W / 40), wMax);
   const h = w * oran;
   const x = Math.min(Math.max(vb.x, -w * 0.25), W - w * 0.75);
   const y = Math.min(Math.max(vb.y, -h * 0.25), H - h * 0.75);

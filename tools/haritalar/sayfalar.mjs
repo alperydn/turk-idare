@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { BOLGELER } from './bolgeler.mjs';
 
-const SURUM = 'h1';
+const SURUM = 'h2';
 const kok = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const hedef = join(kok, 'harita');
 mkdirSync(hedef, { recursive: true });

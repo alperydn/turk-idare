@@ -89,5 +89,49 @@ async function senaryo(ad, ctxAyar) {
   console.log(`ok - ${ad}`);
 }
 
+async function duzeltmeler() {
+  const b = await chromium.launch();
+  const p = await (await b.newContext({ viewport: { width: 1280, height: 800 } })).newPage();
+  const hatalar = [];
+  p.on('pageerror', (e) => hatalar.push(e.message));
+
+  // Büyük alan dairesinin içinden başlayan sürükleme haritayı kaydırmalı
+  await p.goto(`${BASE}/harita/orta-asya.html`);
+  await p.waitForSelector('.hb-isaret[data-id="dogu-turkistan"] .a', { state: 'attached' });
+  const dt = bul('dogu-turkistan');
+  const r = dt.yaricapKm / veri.kmBirim;
+  const ic = await ekranKonumu(p, dt.x + r * 0.5, dt.y + r * 0.3);
+  const once = await p.getAttribute('#hbHarita svg', 'viewBox');
+  await p.mouse.move(ic.x, ic.y); await p.mouse.down();
+  for (let i = 1; i <= 5; i++) await p.mouse.move(ic.x - 20 * i, ic.y);
+  await p.mouse.up();
+  assert.notEqual(await p.getAttribute('#hbHarita svg', 'viewBox'), once, 'alan dairesinden kaydırma');
+
+  // Üst üste binen unsurlar: İstanbul noktası Topkapı'yı da listelemeli
+  await p.goto(`${BASE}/harita/osmanli.html`);
+  await p.waitForSelector('.hb-isaret[data-id="istanbul"]', { state: 'attached' });
+  await p.locator('.hb-isaret[data-id="istanbul"] .n').click({ force: true });
+  const kutu = await p.textContent('#hbKutu');
+  assert.match(kutu, /Topkapı Sarayı/, 'küme kutusu üyeleri listelemeli');
+  assert.match(kutu, /Dolmabahçe/, 'küme kutusu üyeleri listelemeli');
+
+  // Cevaplara bakılan tur rekora sayılmaz
+  await p.goto(`${BASE}/harita/orta-asya.html?mod=alistirma`);
+  await p.evaluate(() => localStorage.removeItem('harita-eniyi-orta-asya'));
+  await p.waitForSelector('.hb-oge');
+  await p.click('#hbCevap');
+  const id = await p.locator('.hb-oge').first().getAttribute('data-id');
+  const u = bul(id);
+  await surukle(p, p.locator(`.hb-oge[data-id="${id}"]`), await ekranKonumu(p, u.x, u.y));
+  await p.click('#hbKontrol');
+  assert.doesNotMatch(await p.textContent('#hbPuan'), /Yeni rekor/);
+  assert.match(await p.textContent('#hbPuan'), /rekora sayılmaz/);
+  assert.equal(await p.evaluate(() => localStorage.getItem('harita-eniyi-orta-asya')), null, 'cevaplı tur kaydedilmemeli');
+  assert.deepEqual(hatalar, []);
+  await b.close();
+  console.log('ok - düzeltmeler');
+}
+
+await duzeltmeler();
 await senaryo('masaüstü', { viewport: { width: 1280, height: 800 } });
 await senaryo('mobil', { ...devices['iPhone 13'] });

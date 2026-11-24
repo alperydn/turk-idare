@@ -14,6 +14,7 @@ export function turSec(unsurlar, kategoriler, boyut, rastgele = Math.random) {
 export function dogruMu(unsur, yer, harita, ulkeIcinde) {
   if (!yer) return false;
   if (unsur.tur === 'ulke') return ulkeIcinde(unsur.ulke, yer.x, yer.y);
+  if (unsur.tur === 'cizgi') return cizgiyeUzaklik(unsur.cizgi, yer) * harita.kmBirim <= harita.esikKm;
   const km = Math.hypot(yer.x - unsur.x, yer.y - unsur.y) * harita.kmBirim;
   const esik = harita.esikKm + (unsur.tur === 'alan' ? unsur.yaricapKm || 0 : 0);
   return km <= esik;
@@ -29,6 +30,32 @@ export function puanla(tur, yerler, harita, ulkeIcinde) {
   }
   const puan = tur.length ? Math.round((dogru.length / tur.length) * 100) : 0;
   return { dogru, yanlis, bos, puan };
+}
+
+// Noktanın çoklu çizgiye (nehir) en kısa uzaklığı, SVG biriminde.
+function cizgiyeUzaklik(cizgiler, { x, y }) {
+  let en = Infinity;
+  for (const c of cizgiler) {
+    for (let i = 1; i < c.length; i++) {
+      const [ax, ay] = c[i - 1], [bx, by] = c[i];
+      const dx = bx - ax, dy = by - ay, uz = dx * dx + dy * dy;
+      const t = uz ? Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / uz)) : 0;
+      en = Math.min(en, Math.hypot(x - (ax + t * dx), y - (ay + t * dy)));
+    }
+  }
+  return en;
+}
+
+// Aynı yerde üst üste binen noktaları kümeler. Her küme: { x, y, uyeler } (uyeler öncelik sırasında).
+export function kumele(noktalar, esik) {
+  const sirali = [...noktalar].sort((a, b) => b.oncelik - a.oncelik);
+  const kumeler = [];
+  for (const n of sirali) {
+    const k = kumeler.find((c) => Math.hypot(c.x - n.x, c.y - n.y) <= esik);
+    if (k) k.uyeler.push(n);
+    else kumeler.push({ x: n.x, y: n.y, uyeler: [n] });
+  }
+  return kumeler;
 }
 
 // Açgözlü etiket seyreltme: öncelik sırasıyla, öncekilerle örtüşmeyenleri göster.

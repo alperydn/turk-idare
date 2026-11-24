@@ -7,7 +7,7 @@ import { dirname, join } from 'node:path';
 import { BOLGELER } from './bolgeler.mjs';
 
 export const KATEGORILER = ['ulke', 'baskent', 'eser', 'muze', 'uretim', 'anlasma', 'fiziki'];
-const TURLER = ['nokta', 'alan', 'ulke'];
+const TURLER = ['nokta', 'alan', 'ulke', 'cizgi'];
 const GENISLIK = 1000, KENAR = 10;
 
 // d3-geo küresel poligonlarda saat yönü dış halka bekler; RFC 7946 tersini kullanır.
@@ -95,6 +95,30 @@ export function bolgeUret(bolge, geo, unsurlar, { indexHtml }) {
   const p = proj([merkez[0], lat]), q = proj([merkez[0] + 1, lat]);
   const kmBirim = (111.32 * Math.cos((lat * Math.PI) / 180)) / Math.hypot(q[0] - p[0], q[1] - p[1]);
 
+  // Nehir unsurları: Natural Earth çizgilerini SVG'ye çevirip 3 birim aralıkla incelt.
+  const nehirCizgisi = (u) => {
+    const adlar = u.nehir || [];
+    const parcalar = [];
+    for (const f of geo.nehirler.features) {
+      if (!adlar.includes(f.properties.name) || !f.geometry) continue;
+      const g = f.geometry;
+      const hatlar = g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : [];
+      for (const h of hatlar) {
+        let son = null, hat = [];
+        for (const k of h) {
+          const p = proj(k);
+          const icerde = p && p[0] > -50 && p[0] < GENISLIK + 50 && p[1] > -50 && p[1] < yukseklik + 50;
+          if (!icerde) { if (hat.length > 1) parcalar.push(hat); hat = []; son = null; continue; }
+          if (son && Math.hypot(p[0] - son[0], p[1] - son[1]) < 3) continue;
+          hat.push([+p[0].toFixed(1), +p[1].toFixed(1)]); son = p;
+        }
+        if (hat.length > 1) parcalar.push(hat);
+      }
+    }
+    if (!parcalar.length) throw new Error(`${u.id}: nehir geometrisi bulunamadı (${adlar.join(', ')})`);
+    return parcalar;
+  };
+
   const goruldu = new Set();
   const cikti = unsurlar.map((u) => {
     if (goruldu.has(u.id)) throw new Error(`Yinelenen id: ${u.id}`);
@@ -108,6 +132,7 @@ export function bolgeUret(bolge, geo, unsurlar, { indexHtml }) {
       const f = ulkeFeat.get(u.ulke);
       if (!f) throw new Error(`${u.id}: ülke bulunamadı ${u.ulke}`);
       konum = u.lat != null ? [u.lon, u.lat] : geoCentroid(f);
+      if (!geoContains(f, konum)) throw new Error(`${u.id}: etiket konumu ${u.ulke} poligonu dışında; lat/lon verin`);
     } else {
       if (typeof u.lat !== 'number' || typeof u.lon !== 'number') throw new Error(`${u.id}: lat/lon eksik`);
       konum = [u.lon, u.lat];
@@ -123,6 +148,7 @@ export function bolgeUret(bolge, geo, unsurlar, { indexHtml }) {
     const o = { id: u.id, ad: u.ad, kat: u.kat, tur: u.tur, x: +x.toFixed(1), y: +y.toFixed(1), not: u.not || '', ref: u.ref };
     if (u.tur === 'alan') o.yaricapKm = u.yaricapKm;
     if (u.tur === 'ulke') o.ulke = u.ulke;
+    if (u.tur === 'cizgi') o.cizgi = nehirCizgisi(u);
     return o;
   });
 

@@ -84,3 +84,26 @@ test('inceltme sonrası tek noktaya düşen minik ülkeler haritaya eklenmez', (
   assert.ok(!c.ulkeler.some((u) => u.a3 === 'VAT'));
   assert.ok(c.ulkeler.every((u) => u.d.includes('L')));
 });
+
+test('ulke türünün konumu kendi poligonunun dışındaysa reddedilir', () => {
+  // Ağırlık merkezi poligon dışına düşen L biçimli ülke
+  const L = { type: 'Feature', properties: { ADM0_A3: 'HRV' }, geometry: { type: 'Polygon', coordinates: [[[60, 40], [80, 40], [80, 41], [61, 41], [61, 50], [60, 50], [60, 40]]] } };
+  const g = { ...geo, ulkeler: { type: 'FeatureCollection', features: [...geo.ulkeler.features, L] } };
+  const u = { id: 'hirvatistan', ad: 'Hırvatistan', kat: 'ulke', tur: 'ulke', ulke: 'HRV', not: '', ref: 'b3-sehirler' };
+  assert.throws(() => bolgeUret(bolge, g, [u], { indexHtml: html }), /hirvatistan.*HRV/);
+  assert.doesNotThrow(() => bolgeUret(bolge, g, [{ ...u, lat: 40.5, lon: 70 }], { indexHtml: html }));
+});
+
+test('cizgi türü nehir geometrisinden SVG çoklu çizgi üretir', () => {
+  const nehir = { type: 'Feature', properties: { name: 'Syr Darya' }, geometry: { type: 'LineString', coordinates: [[60, 46], [65, 44], [70, 41]] } };
+  const g = { ...geo, nehirler: { type: 'FeatureCollection', features: [nehir] } };
+  const u = { id: 'seyhun', ad: 'Seyhun', kat: 'fiziki', tur: 'cizgi', nehir: ['Syr Darya'], lat: 44, lon: 65, not: '', ref: 'b3-sehirler' };
+  const c = bolgeUret(bolge, g, [u], { indexHtml: html });
+  const s = c.unsurlar[0];
+  assert.equal(s.tur, 'cizgi');
+  assert.ok(Array.isArray(s.cizgi) && s.cizgi[0].length >= 2, 'en az bir çizgi');
+  const [x0, y0] = s.cizgi[0][0];
+  const [ex, ey] = c._projeksiyon([60, 46]);
+  assert.ok(Math.hypot(x0 - ex, y0 - ey) < 1);
+  assert.throws(() => bolgeUret(bolge, g, [{ ...u, nehir: ['Yok'] }], { indexHtml: html }), /seyhun.*nehir/i);
+});
